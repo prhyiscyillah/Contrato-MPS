@@ -239,39 +239,34 @@ function normalize(s){ return (s||'').toString().trim().toLowerCase().normalize(
 ------------------------------------------------------------------ */
 const PACOTES = {
   'Ensaio Gestante': [
-    { nome: 'Essencial', valor: 300, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
-    { nome: 'Especial',  valor: 500, desc: '20 fotos editadas + 1 foto impressa 20x30' },
-    { nome: 'Completo',  valor: 750, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
-  ],
-  'Ensaio Newborn': [
-    { nome: 'Essencial', valor: 350, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
-    { nome: 'Especial',  valor: 550, desc: '20 fotos editadas + acess\u00f3rios do est\u00fadio' },
-    { nome: 'Completo',  valor: 800, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
+    { nome: 'Essencial', valor: 180, desc: '20 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 280, desc: '35 fotos editadas + 1 foto impressa 20x30' },
+    { nome: 'Completo',  valor: 400, desc: '50 fotos editadas + \u00e1lbum f\u00edsico simples' },
   ],
   'Ensaio de Casal': [
-    { nome: 'Essencial', valor: 280, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
-    { nome: 'Especial',  valor: 450, desc: '20 fotos editadas + 1 troca de look' },
-    { nome: 'Completo',  valor: 650, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
+    { nome: 'Essencial', valor: 150, desc: '20 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 250, desc: '35 fotos editadas + 1 troca de look' },
+    { nome: 'Completo',  valor: 380, desc: '50 fotos editadas + \u00e1lbum f\u00edsico' },
   ],
   'Ensaio Individual/Book': [
-    { nome: 'Essencial', valor: 280, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
-    { nome: 'Especial',  valor: 450, desc: '20 fotos editadas + 1 troca de look' },
-    { nome: 'Completo',  valor: 650, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
+    { nome: 'Essencial', valor: 150, desc: '20 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 250, desc: '35 fotos editadas + 1 troca de look' },
+    { nome: 'Completo',  valor: 380, desc: '50 fotos editadas + \u00e1lbum f\u00edsico' },
   ],
   'Ensaio Infantil': [
-    { nome: 'Essencial', valor: 280, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
-    { nome: 'Especial',  valor: 450, desc: '20 fotos editadas + 1 troca de look' },
-    { nome: 'Completo',  valor: 650, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
+    { nome: 'Essencial', valor: 150, desc: '20 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 250, desc: '35 fotos editadas + 1 troca de look' },
+    { nome: 'Completo',  valor: 380, desc: '50 fotos editadas + \u00e1lbum f\u00edsico' },
   ],
   'Anivers\u00e1rio/Festa': [
-    { nome: 'Essencial', valor: 400, desc: 'Cobertura de 2 horas + 20 fotos editadas' },
-    { nome: 'Especial',  valor: 650, desc: 'Cobertura de 3 horas + 40 fotos editadas' },
-    { nome: 'Completo',  valor: 950, desc: 'Cobertura de 4 horas + 60 fotos editadas + \u00e1lbum' },
+    { nome: 'Essencial', valor: 250, desc: 'Cobertura de 2 horas + 20 fotos editadas' },
+    { nome: 'Especial',  valor: 400, desc: 'Cobertura de 3 horas + 35 fotos editadas' },
+    { nome: 'Completo',  valor: 600, desc: 'Cobertura de 4 horas + 50 fotos editadas + \u00e1lbum' },
   ],
   'Casamento': [
-    { nome: 'Essencial', valor: 1500, desc: 'Cobertura de 4 horas + galeria editada' },
-    { nome: 'Especial',  valor: 2500, desc: 'Cobertura de 8 horas + galeria editada + \u00e1lbum' },
-    { nome: 'Completo',  valor: 3800, desc: 'Cobertura do dia todo + \u00e1lbum + v\u00eddeo highlights' },
+    { nome: 'Essencial', valor: 700, desc: 'Cobertura de 4 horas + 20 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 1100, desc: 'Cobertura de 6 horas + 40 fotos editadas + \u00e1lbum simples' },
+    { nome: 'Completo',  valor: 1600, desc: 'Cobertura do dia todo + 60 fotos editadas + \u00e1lbum + v\u00eddeo highlights' },
   ],
 };
 
@@ -335,7 +330,7 @@ function renderBuilder() {
 
       <h2 class="section" style="margin-top:22px;">Tipo de serviço</h2>
       <div class="choice-grid" id="grid_tipo">
-        ${['Ensaio Gestante','Ensaio Newborn','Ensaio de Casal','Ensaio Individual/Book','Ensaio Infantil','Aniversário/Festa','Casamento','Outro'].map((t,i)=>`
+        ${['Ensaio Gestante','Ensaio de Casal','Ensaio Individual/Book','Ensaio Infantil','Aniversário/Festa','Casamento','Outro'].map((t,i)=>`
           <label class="choice"><input type="radio" name="tipoServico" value="${t}" ${i===0?'checked':''}> ${t}</label>
         `).join('')}
       </div>
@@ -355,7 +350,7 @@ function renderBuilder() {
 
       <h2 class="section" style="margin-top:22px;">Itens adicionais</h2>
       <div class="choice-grid" id="grid_extras">
-        ${['Álbum impresso','Fotos impressas','Pen drive personalizado','Sessão extra','Vídeo highlights','Making of'].map(t=>`
+        ${['Álbum impresso','Fotos impressas','Quadro de fotos 20x30','Sessão extra','Vídeo highlights','Making of'].map(t=>`
           <label class="choice"><input type="checkbox" name="extras" value="${t}"> ${t}</label>
         `).join('')}
       </div>

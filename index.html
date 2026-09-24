@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contrato Digital — MPS Photography</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" onload="window.__jspdfOk=true" onerror="window.__jspdfOk=false"></script>
+<style>
+  :root {
+    --bg: #f6f1e7;
+    --bg-elev: #ffffff;
+    --text: #211d15;
+    --muted: #6f6656;
+    --gold: #8a6d3b;
+    --gold-dark: #6e5730;
+    --border: #e3dac4;
+    --accent-bg: #fbf7ee;
+    --danger: #b3261e;
+    --success: #1e6b3a;
+    --shadow: 0 10px 30px rgba(30, 24, 10, 0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1b1811;
+      --bg-elev: #24201760;
+      --bg-elev: #24201a;
+      --text: #f2ecdd;
+      --muted: #b7ac93;
+      --gold: #dcbb77;
+      --gold-dark: #caa561;
+      --border: #3c3527;
+      --accent-bg: #29241a;
+      --shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1b1811; --bg-elev: #24201a; --text: #f2ecdd; --muted: #b7ac93;
+    --gold: #dcbb77; --gold-dark: #caa561; --border: #3c3527; --accent-bg: #29241a;
+    --shadow: 0 10px 30px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
+    min-height: 100vh;
+    padding: 28px 14px 60px;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  .brand { text-align:center; margin-bottom: 18px; }
+  .brand h1 {
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    color: var(--gold);
+    font-size: 2rem;
+    letter-spacing: 0.04em;
+    margin: 0 0 2px;
+  }
+  .brand p { margin:0; color: var(--muted); font-size:.85rem; letter-spacing:.05em; }
+  .brand .insta { font-size:.78rem; color: var(--muted); margin-top:4px; }
+  .hr {
+    height:1px; background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 18px 0 22px; opacity:.6;
+  }
+  .card {
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 18px;
+  }
+  h2.section {
+    font-family: 'Playfair Display', Georgia, serif;
+    color: var(--gold);
+    font-size: 1.05rem;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin: 0 0 12px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+  }
+  label { display:block; font-size:.85rem; font-weight:600; margin: 14px 0 5px; color: var(--text); }
+  label.first { margin-top:0; }
+  input[type=text], input[type=email], input[type=tel], input[type=date], input[type=time], input[type=number], textarea {
+    width:100%; padding:11px 12px; border-radius:9px; border:1px solid var(--border);
+    background: var(--accent-bg); color: var(--text); font-size:.95rem; font-family:inherit;
+  }
+  textarea { resize: vertical; min-height:70px; }
+  .hint { font-size:.76rem; color: var(--muted); margin-top:4px; }
+  .row2 { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+  @media (max-width:520px){ .row2 { grid-template-columns: 1fr; } }
+
+  .choice-grid { display:grid; grid-template-columns: 1fr 1fr; gap:8px 14px; margin-top:6px; }
+  @media (max-width:480px){ .choice-grid { grid-template-columns: 1fr; } }
+  .choice {
+    display:flex; align-items:center; gap:9px; padding:9px 10px; border:1px solid var(--border);
+    border-radius:9px; cursor:pointer; background: var(--accent-bg); font-size:.92rem;
+    transition: border-color .15s, background .15s;
+  }
+  .choice input { accent-color: var(--gold); width:16px; height:16px; flex-shrink:0; }
+  .choice.checked { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, var(--accent-bg)); }
+
+  button, .btn {
+    font-family:'Inter',sans-serif; font-weight:700; font-size:.95rem; letter-spacing:.02em;
+    border:none; border-radius:10px; padding:13px 22px; cursor:pointer;
+    background: var(--gold); color:#fff; width:100%;
+    transition: background .15s, transform .05s;
+  }
+  button:hover, .btn:hover { background: var(--gold-dark); }
+  button:active, .btn:active { transform: scale(0.98); }
+  button.secondary { background: transparent; color: var(--gold); border:1.5px solid var(--gold); }
+  button.secondary:hover { background: color-mix(in srgb, var(--gold) 10%, transparent); }
+  button:disabled { opacity:.5; cursor:not-allowed; }
+
+  .muted { color: var(--muted); }
+  .center { text-align:center; }
+  .small { font-size:.8rem; }
+
+  .link-box {
+    display:flex; gap:8px; align-items:center; background: var(--accent-bg);
+    border:1px dashed var(--gold); border-radius:10px; padding:10px 12px; margin-top:10px;
+  }
+  .link-box input { border:none; background:transparent; color:var(--text); font-size:.82rem; flex:1; }
+  .pin-box {
+    text-align:center; font-family:'Playfair Display',serif; font-size:2.1rem; letter-spacing:.3em;
+    color: var(--gold); background: var(--accent-bg); border:1px solid var(--border); border-radius:12px;
+    padding:14px; margin-top:8px;
+  }
+  .pin-input {
+    text-align:center; font-size:1.6rem; letter-spacing:.5em; font-weight:700;
+  }
+
+  .clause-title {
+    font-family:'Playfair Display', Georgia, serif; color:var(--gold); font-size:1rem;
+    margin: 20px 0 8px; text-transform:uppercase; letter-spacing:.05em;
+  }
+  .clause p { margin: 0 0 10px; text-align:justify; font-size:.93rem; }
+  .clause p b { color: var(--text); }
+  ul.plain { margin:6px 0 12px; padding-left:20px; font-size:.93rem; }
+  .party-box {
+    background: var(--accent-bg); border:1px solid var(--border); border-radius:10px; padding:12px 14px;
+    font-size:.88rem; margin-bottom:10px;
+  }
+  .party-box b { display:inline-block; min-width:110px; color:var(--muted); font-weight:600; }
+
+  .cover { text-align:center; padding: 40px 20px 30px; }
+  .cover .doc-icon { font-size:2.6rem; margin-bottom:6px; }
+  .cover h2 { font-family:'Playfair Display',serif; font-size:1.35rem; color:var(--text); margin: 6px 0 4px; }
+  .cover p.sent { color: var(--muted); font-size:.88rem; margin-bottom: 22px; }
+
+  #sigCanvas { touch-action:none; width:100%; height:170px; border:1.5px dashed var(--gold); border-radius:10px; background:#fff; }
+  .sig-row { display:flex; gap:10px; margin-top:8px; }
+  .sig-row button { width:auto; padding:9px 14px; font-size:.82rem; }
+
+  .status-pill {
+    display:inline-block; padding:4px 12px; border-radius:20px; font-size:.75rem; font-weight:700;
+    letter-spacing:.03em;
+  }
+  .status-pending { background:#f4e2c1; color:#7a5210; }
+  .status-signed { background:#d7ecdc; color: var(--success); }
+
+  .error-msg { color: var(--danger); font-size:.85rem; margin-top:8px; display:none; }
+  .footer-note { text-align:center; color:var(--muted); font-size:.72rem; margin-top:26px; line-height:1.6; }
+  .hidden { display:none !important; }
+  .print-only { display:none; }
+  @media print {
+    body * { visibility: hidden; }
+    #printArea, #printArea * { visibility: visible; }
+    #printArea { display:block !important; position:absolute; top:0; left:0; width:100%; padding:0; }
+    .print-brand { font-family:'Playfair Display',serif; color:#8A6D3B; font-size:1.3rem; text-align:center; margin-bottom:4px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <h1>MPS PHOTOGRAPHY</h1>
+    <p>ensaios &amp; retratos</p>
+    <p class="insta">@_mpsphotography_</p>
+  </div>
+  <div class="hr"></div>
+
+  <div id="app"></div>
+
+  <div class="footer-note">
+    Documento gerado digitalmente pela MPS Photography.
+  </div>
+</div>
+
+<script>
+/* ---------------------------------------------------------------
+   Utilidades de codificação (URL carrega os dados do contrato)
+--------------------------------------------------------------- */
+function encodePayload(obj) {
+  const json = JSON.stringify(obj);
+  return btoa(unescape(encodeURIComponent(json))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+function decodePayload(str) {
+  try {
+    let b64 = str.replace(/-/g,'+').replace(/_/g,'/');
+    while (b64.length % 4) b64 += '=';
+    const json = decodeURIComponent(escape(atob(b64)));
+    return JSON.parse(json);
+  } catch (e) { return null; }
+}
+function fmtMoney(v) {
+  const n = parseFloat(v);
+  if (isNaN(n)) return v || '[valor]';
+  return 'R$ ' + n.toLocaleString('pt-BR', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function fmtDate(d) {
+  if (!d) return '[data]';
+  const [y,m,day] = d.split('-');
+  return day && m && y ? `${day}/${m}/${y}` : d;
+}
+function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function normalize(s){ return (s||'').toString().trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+/* ---------------------------------------------------------------
+   Rede de segurança: qualquer erro de JS vira um aviso visível na
+   tela, em vez de falhar silenciosamente (o que parecia "não faz nada").
+--------------------------------------------------------------- */
+function showFatalError(msg) {
+  let box = document.getElementById('fatalErrorBox');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'fatalErrorBox';
+    box.style.cssText = 'position:sticky;top:0;z-index:999;background:#b3261e;color:#fff;padding:10px 14px;font-size:.8rem;border-radius:8px;margin-bottom:14px;white-space:pre-wrap;';
+    document.body.insertBefore(box, document.body.firstChild);
+  }
+  box.textContent = '⚠️ Erro: ' + msg;
+}
+window.addEventListener('error', (e) => showFatalError(e.message || String(e.error)));
+window.addEventListener('unhandledrejection', (e) => showFatalError((e.reason && e.reason.message) || String(e.reason)));
+
+const app = document.getElementById('app');
+const params = new URLSearchParams(location.search);
+const dParam = params.get('d');
+
+// Estado global simples — evita ter que serializar dados grandes
+// (assinatura em base64, textos com aspas etc.) dentro de atributos onclick.
+const STATE = { payload: null, sigDataUrl: null, nomeFinal: null, assinadoEm: null };
+
+if (dParam) {
+  const payload = decodePayload(dParam);
+  if (!payload) {
+    renderInvalid();
+  } else {
+    STATE.payload = payload;
+    try { renderClientCover(payload); } catch (e) { showFatalError('ao abrir o contrato: ' + e.message); }
+  }
+} else {
+  try { renderBuilder(); } catch (e) { showFatalError('ao montar o painel: ' + e.message); }
+}
+
+/* ---------------------------------------------------------------
+   TELA: link inválido
+--------------------------------------------------------------- */
+function renderInvalid() {
+  app.innerHTML = `
+    <div class="card center">
+      <p style="font-size:2rem;margin:0 0 8px;">⚠️</p>
+      <h2 class="section" style="border:none;">Link inválido</h2>
+      <p class="muted">Não foi possível ler os dados deste contrato. Peça um novo link para a fotógrafa.</p>
+    </div>`;
+}
+
+/* ---------------------------------------------------------------
+   PAINEL DA FOTÓGRAFA — cria um novo contrato
+--------------------------------------------------------------- */
+function renderBuilder() {
+  app.innerHTML = `
+    <div class="card">
+      <h2 class="section">Painel MPS Photography — Novo Contrato</h2>
+      <p class="muted small" style="margin-top:-6px;">Preencha os dados do cliente e do serviço. No final você recebe um link exclusivo para enviar ao cliente pelo WhatsApp.</p>
+
+      <label class="first">Nome completo do cliente</label>
+      <input type="text" id="f_nome" placeholder="Ex: Gabrielle Aparecida Bastos">
+
+      <div class="row2">
+        <div><label>CPF</label><input type="text" id="f_cpf" placeholder="000.000.000-00"></div>
+        <div><label>Telefone / WhatsApp</label><input type="tel" id="f_tel" placeholder="(11) 90000-0000"></div>
+      </div>
+
+      <label>E-mail</label>
+      <input type="email" id="f_email" placeholder="cliente@email.com">
+
+      <label>Endereço</label>
+      <input type="text" id="f_endereco" placeholder="Rua, número, bairro, cidade/UF">
+
+      <h2 class="section" style="margin-top:22px;">Tipo de serviço</h2>
+      <div class="choice-grid" id="grid_tipo">
+        ${['Ensaio Gestante','Ensaio Newborn','Ensaio de Casal','Ensaio Individual/Book','Ensaio Infantil','Aniversário/Festa','Casamento','Outro'].map((t,i)=>`
+          <label class="choice"><input type="radio" name="tipoServico" value="${t}" ${i===0?'checked':''}> ${t}</label>
+        `).join('')}
+      </div>
+      <input type="text" id="f_tipoOutro" placeholder="Se 'Outro', descreva" style="margin-top:8px;">
+
+      <label>Descrição do pacote</label>
+      <textarea id="f_pacote" placeholder="Ex: Galeria Especial com 20 fotos digitais em alta resolução"></textarea>
+
+      <div class="row2">
+        <div><label>Data do ensaio/evento</label><input type="date" id="f_data"></div>
+        <div><label>Horário</label><input type="time" id="f_horario"></div>
+      </div>
+      <label>Local</label>
+      <input type="text" id="f_local" placeholder="Endereço do ensaio ou evento">
+
+      <h2 class="section" style="margin-top:22px;">Itens adicionais</h2>
+      <div class="choice-grid" id="grid_extras">
+        ${['Álbum impresso','Quadro decorativo','Pen drive personalizado','Sessão extra','Vídeo highlights','Making of'].map(t=>`
+          <label class="choice"><input type="checkbox" name="extras" value="${t}"> ${t}</label>
+        `).join('')}
+      </div>
+      <input type="text" id="f_extraOutro" placeholder="Outro item adicional (opcional)" style="margin-top:8px;">
+
+      <h2 class="section" style="margin-top:22px;">Valores</h2>
+      <div class="row2">
+        <div><label>Valor total</label><input type="number" step="0.01" id="f_valor" placeholder="0,00"></div>
+        <div><label>Sinal</label><input type="number" step="0.01" id="f_sinal" placeholder="0,00"></div>
+      </div>
+      <div class="row2">
+        <div><label>Saldo restante</label><input type="number" step="0.01" id="f_saldo" placeholder="0,00"></div>
+        <div><label>Parcelas do saldo (até)</label><input type="number" id="f_parcelas" placeholder="1"></div>
+      </div>
+
+      <label>Forma(s) de pagamento aceitas</label>
+      <div class="choice-grid">
+        ${['PIX','Cartão de crédito','Cartão de débito','Dinheiro'].map(t=>`
+          <label class="choice"><input type="checkbox" name="pagamento" value="${t}"> ${t}</label>
+        `).join('')}
+      </div>
+
+      <div class="row2" style="margin-top:14px;">
+        <div><label>Prazo de entrega (dias úteis)</label><input type="number" id="f_prazo" placeholder="15"></div>
+        <div><label>Antecedência p/ remarcação (dias)</label><input type="number" id="f_antecedencia" placeholder="7"></div>
+      </div>
+
+      <h2 class="section" style="margin-top:22px;">Direitos de imagem</h2>
+      <div class="choice-grid" id="grid_direitos">
+        ${['Autoriza uso total (portfólio e redes sociais)','Autoriza, sem uso comercial pago (anúncios)','Autoriza mediante aprovação prévia de cada imagem','NÃO autoriza divulgação pública'].map((t,i)=>`
+          <label class="choice"><input type="radio" name="direitosImagem" value="${t}" ${i===0?'checked':''}> ${t}</label>
+        `).join('')}
+      </div>
+
+      <button type="button" style="margin-top:22px;" onclick="gerarLink()">Gerar link do contrato</button>
+      <p class="error-msg" id="builderError">Preencha ao menos o nome do cliente antes de gerar o link.</p>
+
+      <div id="resultBox" class="hidden" style="margin-top:18px;">
+        <label class="first">Link para enviar ao cliente</label>
+        <div class="link-box">
+          <input type="text" id="linkOut" readonly>
+          <button type="button" style="width:auto;padding:8px 14px;" onclick="copiarLink()">Copiar</button>
+        </div>
+        <button type="button" class="secondary" style="margin-top:12px;" onclick="abrirPreview()">Pré-visualizar como o cliente verá</button>
+      </div>
+    </div>
+  `;
+
+  try {
+    document.querySelectorAll('.choice').forEach(c => {
+      const input = c.querySelector('input');
+      const sync = () => c.classList.toggle('checked', input.checked);
+      input.addEventListener('change', () => {
+        if (input.type === 'radio') {
+          document.querySelectorAll(`input[name="${input.name}"]`).forEach(r => r.closest('.choice').classList.remove('checked'));
+        }
+        sync();
+      });
+      sync();
+    });
+  } catch (e) { showFatalError('ao configurar as opções: ' + e.message); }
+}
+
+function gerarLink() {
+  const tipoEl = document.querySelector('input[name="tipoServico"]:checked');
+  const extras = Array.from(document.querySelectorAll('input[name="extras"]:checked')).map(e=>e.value);
+  const pagamento = Array.from(document.querySelectorAll('input[name="pagamento"]:checked')).map(e=>e.value);
+
+  const payload = {
+    clienteNome: document.getElementById('f_nome').value.trim(),
+    clienteCpf: document.getElementById('f_cpf').value.trim(),
+    clienteTel: document.getElementById('f_tel').value.trim(),
+    clienteEmail: document.getElementById('f_email').value.trim(),
+    clienteEndereco: document.getElementById('f_endereco').value.trim(),
+    tipoServico: tipoEl ? tipoEl.value : '',
+    tipoServicoOutro: document.getElementById('f_tipoOutro').value.trim(),
+    pacote: document.getElementById('f_pacote').value.trim(),
+    data: document.getElementById('f_data').value,
+    horario: document.getElementById('f_horario').value,
+    local: document.getElementById('f_local').value.trim(),
+    extras: extras,
+    extraOutro: document.getElementById('f_extraOutro').value.trim(),
+    valor: document.getElementById('f_valor').value,
+    sinal: document.getElementById('f_sinal').value,
+    saldo: document.getElementById('f_saldo').value,
+    parcelas: document.getElementById('f_parcelas').value,
+    pagamento: pagamento,
+    prazo: document.getElementById('f_prazo').value,
+    antecedencia: document.getElementById('f_antecedencia').value,
+    direitosImagem: (document.querySelector('input[name="direitosImagem"]:checked') || {}).value || '',
+  };
+
+  if (!payload.clienteNome) {
+    const errEl = document.getElementById('builderError');
+    if (errEl) errEl.style.display = 'block';
+    document.getElementById('f_nome').focus();
+    return;
+  }
+  const errEl = document.getElementById('builderError');
+  if (errEl) errEl.style.display = 'none';
+
+  const encoded = encodePayload(payload);
+  const url = location.origin + location.pathname + '?d=' + encoded;
+  document.getElementById('linkOut').value = url;
+  document.getElementById('resultBox').classList.remove('hidden');
+  window._previewUrl = url;
+}
+
+function copiarLink() {
+  const input = document.getElementById('linkOut');
+  input.select();
+  input.setSelectionRange(0, 99999);
+  try { document.execCommand('copy'); } catch(e) {}
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(input.value).catch(()=>{});
+  }
+}
+function abrirPreview() {
+  if (window._previewUrl) location.href = window._previewUrl;
+}
+
+/* ---------------------------------------------------------------
+   VISÃO DO CLIENTE
+--------------------------------------------------------------- */
+function renderClientCover(payload) {
+  app.innerHTML = `
+    <div class="card cover">
+      <div class="doc-icon">📄</div>
+      <h2 class="section" style="border:none;">Contrato de Prestação de Serviços</h2>
+      <h2>de Fotografia e Filmagem</h2>
+      <p class="sent">Enviado por Priscila Pires da Silva — MPS Photography</p>
+      <button type="button" onclick="renderContract(STATE.payload)">Acessar contrato</button>
+    </div>
+  `;
+}
+
+function contractHtml(payload, opts) {
+  opts = opts || {};
+  const tipo = payload.tipoServico === 'Outro' ? (payload.tipoServicoOutro || 'Outro') : payload.tipoServico;
+  const extrasList = (payload.extras||[]).slice();
+  if (payload.extraOutro) extrasList.push(payload.extraOutro);
+  const extrasHtml = extrasList.length ? extrasList.map(e=>`<li>${esc(e)}</li>`).join('') : '<li>Nenhum item adicional contratado.</li>';
+  const pagamentoTxt = (payload.pagamento||[]).length ? payload.pagamento.join(', ') : '[a combinar]';
+
+  return `
+    <div class="clause">
+      <div class="party-box">
+        <div><b>CONTRATADA</b> Priscila Pires da Silva — MPS Photography</div>
+        <div><b>WhatsApp</b> (11) 91474-6140 / (11) 97558-6258</div>
+        <div><b>Instagram</b> @_mpsphotography_</div>
+      </div>
+      <div class="party-box">
+        <div><b>CONTRATANTE</b> ${esc(payload.clienteNome)}</div>
+        ${payload.clienteCpf ? `<div><b>CPF</b> ${esc(payload.clienteCpf)}</div>`:''}
+        ${payload.clienteEndereco ? `<div><b>Endereço</b> ${esc(payload.clienteEndereco)}</div>`:''}
+        ${payload.clienteEmail ? `<div><b>E-mail</b> ${esc(payload.clienteEmail)}</div>`:''}
+        ${payload.clienteTel ? `<div><b>Telefone</b> ${esc(payload.clienteTel)}</div>`:''}
+      </div>
+
+      <div class="clause-title">1. Do Objeto</div>
+      <p>1.1. O presente contrato tem por objeto a prestação de serviços profissionais de <b>${esc(tipo)}</b>, a ser realizado no dia <b>${fmtDate(payload.data)}</b>${payload.horario?`, com início previsto para às <b>${esc(payload.horario)}</b>`:''}${payload.local?`, no seguinte local: <b>${esc(payload.local)}</b>`:''}.</p>
+      <p>1.2. A cobertura será realizada pela equipe da CONTRATADA, sendo contratado o pacote: <b>${esc(payload.pacote || '[a definir]')}</b>.</p>
+      <p>1.3. As fotografias são realizadas com equipamento fotográfico profissional (câmera). Os registros em vídeo, quando inclusos no pacote, são realizados via smartphone, podendo apresentar qualidade técnica distinta da fotografia.</p>
+
+      <div class="clause-title">2. Dos Serviços Contratados</div>
+      <p>2.1. Itens adicionais contratados nesta ocasião:</p>
+      <ul class="plain">${extrasHtml}</ul>
+      <p>2.2. Vestuário, maquiagem, cabelo e acessórios pessoais utilizados pelo CONTRATANTE (ou pelos fotografados) são de sua exclusiva responsabilidade, salvo se expressamente incluídos no pacote contratado. "Troca de figurino/look", quando mencionada, refere-se à possibilidade de o CONTRATANTE trocar de roupa própria durante a sessão, não implicando fornecimento de roupas, maquiagem ou acessórios pela CONTRATADA.</p>
+
+      <div class="clause-title">3. Do Valor e Forma de Pagamento</div>
+      <p>3.1. Pelos serviços contratados, o CONTRATANTE pagará à CONTRATADA o valor total de <b>${fmtMoney(payload.valor)}</b>.</p>
+      <p>3.2. Forma de pagamento: sinal de <b>${fmtMoney(payload.sinal)}</b> no ato da contratação, e saldo de <b>${fmtMoney(payload.saldo)}</b>${payload.parcelas?` em até <b>${esc(payload.parcelas)}x</b>`:''}.</p>
+      <p>3.3. Formas de pagamento aceitas: <b>${esc(pagamentoTxt)}</b>.</p>
+      <p>3.4. O sinal mencionado não será restituído em caso de desistência do CONTRATANTE, ressalvado o disposto na Cláusula 5.</p>
+
+      <div class="clause-title">4. Da Entrega do Material</div>
+      <p>4.1. O material será entregue em até <b>${esc(payload.prazo || '[a combinar]')} dias úteis</b> após a realização do serviço e/ou seleção das fotos, por meio de galeria online exclusiva e protegida por senha.</p>
+
+      <div class="clause-title">5. Do Cancelamento e Remarcação</div>
+      <p>5.1. Em caso de desistência do CONTRATANTE com antecedência mínima de <b>${esc(payload.antecedencia || '[a combinar]')} dias</b>, poderá haver remarcação sem custo adicional, sujeita à disponibilidade de agenda da CONTRATADA.</p>
+      <p>5.2. Em caso de força maior (chuva, saúde, luto), a data poderá ser remarcada sem ônus, mediante comunicação prévia.</p>
+      <p>5.3. Caso a CONTRATADA precise cancelar por motivo próprio, o valor pago será integralmente devolvido ou a data reagendada, à escolha do CONTRATANTE.</p>
+
+      <div class="clause-title">6. Dos Direitos de Imagem</div>
+      <p>6.1. Quanto ao uso das imagens para divulgação do trabalho da CONTRATADA (portfólio, redes sociais, site), fica definido: <b>${esc(payload.direitosImagem || 'a combinar')}</b>.</p>
+      <p>6.2. Os direitos autorais sobre as fotografias/filmagens pertencem à CONTRATADA, cabendo ao CONTRATANTE o uso pessoal e não comercial do material entregue.</p>
+
+      <div class="clause-title">7. Das Responsabilidades</div>
+      <p>7.1. A CONTRATADA se compromete a prestar o serviço com qualidade técnica e artística. O CONTRATANTE se compromete a fornecer as informações necessárias com antecedência razoável.</p>
+
+      <div class="clause-title">8. Do Foro</div>
+      <p>8.1. Fica eleito o foro da comarca de Cabreúva/SP para dirimir quaisquer controvérsias oriundas deste contrato.</p>
+    </div>
+  `;
+}
+
+function renderContract(payload) {
+  app.innerHTML = `
+    <div class="card">
+      <h2 class="section">Contrato de Prestação de Serviços</h2>
+      ${contractHtml(payload)}
+    </div>
+    <div class="card">
+      <h2 class="section">Assinatura Digital</h2>
+      <p class="muted small">Assine no campo abaixo com o dedo ou o mouse.</p>
+      <canvas id="sigCanvas"></canvas>
+      <div class="sig-row">
+        <button type="button" class="secondary" onclick="clearSig()">Limpar</button>
+      </div>
+      <label style="margin-top:16px;">Nome completo (confirmação)</label>
+      <input type="text" id="sigNome" value="${esc(payload.clienteNome)}">
+      <p class="error-msg" id="sigError">Por favor, assine no campo acima antes de concluir.</p>
+      <button type="button" style="margin-top:16px;" onclick="concluirAssinatura()">Assinar e Concluir</button>
+    </div>
+  `;
+  setupSignaturePad();
+}
+
+/* --------------------------- Assinatura (canvas) --------------------------- */
+let sigCtx, sigHasDrawn = false, sigDrawing = false, sigLast = null;
+function setupSignaturePad() {
+  const canvas = document.getElementById('sigCanvas');
+  const ratio = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * ratio;
+  canvas.height = rect.height * ratio;
+  sigCtx = canvas.getContext('2d');
+  sigCtx.scale(ratio, ratio);
+  sigCtx.lineWidth = 2.2;
+  sigCtx.lineCap = 'round';
+  sigCtx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--text') || '#111';
+  sigHasDrawn = false;
+
+  function pos(e) {
+    const r = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - r.left, y: t.clientY - r.top };
+  }
+  function start(e) { e.preventDefault(); sigDrawing = true; sigLast = pos(e); }
+  function move(e) {
+    if (!sigDrawing) return;
+    e.preventDefault();
+    const p = pos(e);
+    sigCtx.beginPath();
+    sigCtx.moveTo(sigLast.x, sigLast.y);
+    sigCtx.lineTo(p.x, p.y);
+    sigCtx.stroke();
+    sigLast = p;
+    sigHasDrawn = true;
+  }
+  function end() { sigDrawing = false; }
+
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, {passive:false});
+  canvas.addEventListener('touchmove', move, {passive:false});
+  canvas.addEventListener('touchend', end);
+}
+function clearSig() {
+  const canvas = document.getElementById('sigCanvas');
+  sigCtx.clearRect(0,0,canvas.width,canvas.height);
+  sigHasDrawn = false;
+}
+
+/* --------------------------- Conclusão + PDF --------------------------- */
+function concluirAssinatura() {
+  const payload = STATE.payload;
+  if (!sigHasDrawn) {
+    document.getElementById('sigError').style.display = 'block';
+    return;
+  }
+  const nomeFinal = document.getElementById('sigNome').value.trim() || payload.clienteNome;
+  const sigDataUrl = document.getElementById('sigCanvas').toDataURL('image/png');
+  const now = new Date();
+  const assinadoEm = now.toLocaleDateString('pt-BR') + ' às ' + now.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+  STATE.nomeFinal = nomeFinal;
+  STATE.sigDataUrl = sigDataUrl;
+  STATE.assinadoEm = assinadoEm;
+  renderSuccess(payload, nomeFinal, sigDataUrl, assinadoEm);
+}
+
+function renderSuccess(payload, nomeFinal, sigDataUrl, assinadoEm) {
+  STATE.nomeFinal = nomeFinal;
+  STATE.sigDataUrl = sigDataUrl;
+  STATE.assinadoEm = assinadoEm;
+  app.innerHTML = `
+    <div class="card center">
+      <p style="font-size:2.4rem;margin:0;">✅</p>
+      <h2 class="section" style="border:none;">Contrato assinado com sucesso!</h2>
+      <p class="muted">Assinado por <b>${esc(nomeFinal)}</b> em ${assinadoEm}.</p>
+      <img src="${sigDataUrl}" style="max-width:220px;border-bottom:1px solid var(--border);margin:10px 0 18px;">
+
+      <button type="button" onclick="imprimirContrato()">Salvar PDF / Imprimir</button>
+      <p class="muted small" style="margin-top:8px;">Abre a opção de impressão do seu celular — escolha "Salvar em PDF" para guardar o arquivo.</p>
+
+      <button type="button" class="secondary" id="btnBaixarPdf" style="margin-top:14px;" onclick="baixarPdf()">Tentar baixar PDF automaticamente</button>
+      <p class="small" id="pdfStatus" style="margin-top:8px;min-height:18px;"></p>
+
+      <p class="muted small" style="margin-top:14px;">Depois de salvar, envie o PDF pela conversa do WhatsApp com a fotógrafa para finalizar.</p>
+      <a class="btn secondary" style="display:block;margin-top:10px;text-decoration:none;"
+         href="https://wa.me/5511914746140?text=${encodeURIComponent('Olá! Acabei de assinar meu contrato de '+ (payload.tipoServico||'ensaio') +' com a MPS Photography. Segue em anexo.')}"
+         target="_blank" rel="noopener">Abrir WhatsApp</a>
+    </div>
+
+    <div id="printArea" class="print-only">
+      <div class="print-brand">MPS PHOTOGRAPHY — ensaios &amp; retratos</div>
+      <h2 style="text-align:center;">Contrato de Prestação de Serviços de Fotografia e Filmagem</h2>
+      ${contractHtml(payload)}
+      <div style="margin-top:24px;">
+        <p><b>Assinado digitalmente por:</b> ${esc(nomeFinal)}</p>
+        <p><b>Data/hora:</b> ${assinadoEm}</p>
+        <img src="${sigDataUrl}" style="max-width:220px;border-bottom:1px solid #333;margin-top:6px;">
+      </div>
+    </div>
+  `;
+}
+
+function imprimirContrato() {
+  window.print();
+}
+
+function setPdfStatus(msg, kind) {
+  const el = document.getElementById('pdfStatus');
+  if (!el) return;
+  el.textContent = msg;
+  el.style.color = kind === 'error' ? 'var(--danger)' : (kind === 'ok' ? 'var(--success)' : 'var(--muted)');
+}
+
+async function waitForJsPdf(timeoutMs) {
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    if (window.jspdf && window.jspdf.jsPDF) return true;
+    if (window.__jspdfOk === false) return false;
+    await new Promise(r => setTimeout(r, 100));
+  }
+  return !!(window.jspdf && window.jspdf.jsPDF);
+}
+
+async function baixarPdf() {
+  const btn = document.getElementById('btnBaixarPdf');
+  if (btn) btn.disabled = true;
+  setPdfStatus('Gerando PDF...', 'muted');
+  try {
+    const payload = STATE.payload;
+    const nomeFinal = STATE.nomeFinal;
+    const sigDataUrl = STATE.sigDataUrl;
+    const assinadoEm = STATE.assinadoEm;
+
+    const ready = await waitForJsPdf(8000);
+    if (!ready) {
+      setPdfStatus('Não foi possível carregar o gerador de PDF (falha de conexão). Recarregue a página e tente novamente.', 'error');
+      return;
+    }
+    const { jsPDF } = window.jspdf;
+
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const marginX = 18;
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const maxWidth = pageWidth - marginX*2;
+  let y = 20;
+
+  function ensureSpace(h) {
+    if (y + h > pageHeight - 18) { doc.addPage(); y = 20; }
+  }
+  function title(text, size=13) {
+    ensureSpace(10);
+    doc.setFont('helvetica','bold'); doc.setFontSize(size); doc.setTextColor(120,90,40);
+    doc.text(text, marginX, y); y += 7;
+    doc.setDrawColor(200,175,120); doc.line(marginX, y-4, pageWidth-marginX, y-4);
+  }
+  function para(text, bold=false) {
+    doc.setFont('helvetica', bold ? 'bold':'normal'); doc.setFontSize(10.5); doc.setTextColor(30,30,30);
+    const lines = doc.splitTextToSize(text, maxWidth);
+    lines.forEach(line => { ensureSpace(6); doc.text(line, marginX, y); y += 5.6; });
+    y += 2;
+  }
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(120,90,40);
+  doc.text('MPS PHOTOGRAPHY', pageWidth/2, y, {align:'center'}); y += 7;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(100,100,100);
+  doc.text('ensaios & retratos', pageWidth/2, y, {align:'center'}); y += 10;
+
+  doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(20,20,20);
+  doc.text('CONTRATO DE PRESTAÇÃO DE SERVIÇOS DE FOTOGRAFIA E FILMAGEM', pageWidth/2, y, {align:'center', maxWidth}); y += 12;
+
+  const tipo = payload.tipoServico === 'Outro' ? (payload.tipoServicoOutro || 'Outro') : payload.tipoServico;
+  const extrasList = (payload.extras||[]).slice();
+  if (payload.extraOutro) extrasList.push(payload.extraOutro);
+  const pagamentoTxt = (payload.pagamento||[]).length ? payload.pagamento.join(', ') : '[a combinar]';
+
+  para('CONTRATADA: Priscila Pires da Silva — MPS Photography | WhatsApp (11) 91474-6140 / (11) 97558-6258 | Instagram @_mpsphotography_');
+  para(`CONTRATANTE: ${payload.clienteNome}${payload.clienteCpf ? ' | CPF: '+payload.clienteCpf : ''}${payload.clienteEndereco ? ' | Endereço: '+payload.clienteEndereco : ''}`);
+
+  title('1. Do Objeto');
+  para(`1.1. O presente contrato tem por objeto a prestação de serviços profissionais de ${tipo}, a ser realizado no dia ${fmtDate(payload.data)}${payload.horario?', às '+payload.horario:''}${payload.local?', no local: '+payload.local:''}.`);
+  para(`1.2. Pacote contratado: ${payload.pacote || '[a definir]'}.`);
+  para('1.3. As fotografias são realizadas com equipamento fotográfico profissional (câmera). Os registros em vídeo, quando inclusos, são realizados via smartphone, podendo apresentar qualidade técnica distinta da fotografia.');
+
+  title('2. Dos Serviços Contratados');
+  para('2.1. Itens adicionais contratados: ' + (extrasList.length ? extrasList.join(', ') : 'nenhum item adicional.'));
+  para('2.2. Vestuário, maquiagem, cabelo e acessórios pessoais são de responsabilidade do CONTRATANTE, salvo se expressamente incluídos no pacote. "Troca de figurino/look" refere-se a trocar de roupa própria durante a sessão, não implicando fornecimento de roupas, maquiagem ou acessórios pela CONTRATADA.');
+
+  title('3. Do Valor e Forma de Pagamento');
+  para(`3.1. Valor total: ${fmtMoney(payload.valor)}.`);
+  para(`3.2. Sinal: ${fmtMoney(payload.sinal)} | Saldo: ${fmtMoney(payload.saldo)}${payload.parcelas ? ' em até '+payload.parcelas+'x' : ''}.`);
+  para(`3.3. Forma(s) de pagamento: ${pagamentoTxt}.`);
+  para('3.4. O sinal não será restituído em caso de desistência do CONTRATANTE, ressalvado o disposto na Cláusula 5.');
+
+  title('4. Da Entrega do Material');
+  para(`4.1. Entrega em até ${payload.prazo || '[a combinar]'} dias úteis, via galeria online exclusiva e protegida por senha.`);
+
+  title('5. Do Cancelamento e Remarcação');
+  para(`5.1. Desistência com antecedência mínima de ${payload.antecedencia || '[a combinar]'} dias: remarcação sem custo adicional, sujeita à agenda da CONTRATADA.`);
+  para('5.2. Força maior (chuva, saúde, luto): remarcação sem ônus, mediante comunicação prévia.');
+  para('5.3. Cancelamento por motivo da CONTRATADA: devolução integral do valor ou reagendamento, à escolha do CONTRATANTE.');
+
+  title('6. Dos Direitos de Imagem');
+  para(`6.1. Uso das imagens para divulgação (portfólio, redes sociais, site): ${payload.direitosImagem || 'a combinar'}.`);
+  para('6.2. Direitos autorais pertencem à CONTRATADA; uso pessoal e não comercial ao CONTRATANTE.');
+
+  title('7. Das Responsabilidades');
+  para('7.1. A CONTRATADA presta o serviço com qualidade técnica e artística; o CONTRATANTE fornece as informações necessárias com antecedência razoável.');
+
+  title('8. Do Foro');
+  para('8.1. Fica eleito o foro da comarca de Cabreúva/SP.');
+
+  ensureSpace(45);
+  y += 6;
+  para(`Cabreúva/SP, ${assinadoEm}.`);
+  y += 4;
+  ensureSpace(40);
+  try { doc.addImage(sigDataUrl, 'PNG', marginX, y, 55, 24); } catch(e) {}
+  y += 26;
+  doc.setDrawColor(80,80,80); doc.line(marginX, y, marginX+70, y); y += 5;
+  doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(20,20,20);
+  doc.text(nomeFinal, marginX, y); y += 5;
+  doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(100,100,100);
+  doc.text('CONTRATANTE', marginX, y);
+
+  const blob = doc.output('blob');
+  const filename = 'contrato-mps-' + nomeFinal.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-') + '.pdf';
+
+  const downloads = (window.claude && window.claude.use) ? await window.claude.use('downloads').catch(()=>null) : null;
+
+  if (!downloads) {
+    // Sem a capacidade de downloads disponível nesta visualização —
+    // não há como salvar o arquivo diretamente (o navegador dentro do
+    // artefato bloqueia downloads comuns). Abre o PDF em uma nova aba
+    // como último recurso, de onde dá para salvar manualmente.
+    try {
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      setPdfStatus('Não consegui salvar o arquivo automaticamente aqui — abri o PDF em outra aba, use o menu de compartilhar/salvar dela.', 'error');
+    } catch (e) {
+      setPdfStatus('Não foi possível gerar o download neste ambiente. Erro: ' + (e && e.message ? e.message : e), 'error');
+    }
+    return;
+  }
+
+  try {
+    await downloads.save({ filename, data: blob });
+    setPdfStatus('PDF salvo com sucesso!', 'ok');
+  } catch (err) {
+    const code = err && err.code;
+    const map = {
+      declined: 'Você recusou o download. Toque em "Baixar PDF assinado" novamente se quiser salvar.',
+      rate_limited: 'Muitas tentativas seguidas — aguarde alguns segundos e tente de novo.',
+      too_large: 'O arquivo ficou grande demais para salvar aqui.',
+      unavailable: 'O download não está disponível neste momento.',
+    };
+    setPdfStatus(map[code] || ('Não foi possível salvar o PDF (erro: ' + (code || (err && err.message) || 'desconhecido') + ').'), 'error');
+  }
+  } catch (fatal) {
+    setPdfStatus('Ocorreu um erro ao gerar o PDF: ' + (fatal && fatal.message ? fatal.message : fatal), 'error');
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

@@ -223,6 +223,58 @@ function fmtDate(d) {
 function esc(s){ return (s||'').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function normalize(s){ return (s||'').toString().trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
 
+/* =================================================================
+   TABELA DE PRE\u00c7OS \u2014 EDITE S\u00d3 AQUI para atualizar valores e pacotes.
+   =================================================================
+   Para cada tipo de servi\u00e7o, liste os pacotes oferecidos: nome,
+   valor em reais (n\u00famero, sem "R$") e uma descri\u00e7\u00e3o curta do que
+   est\u00e1 incluso. Ao escolher o "Tipo de servi\u00e7o" no painel, esses
+   pacotes aparecem como op\u00e7\u00f5es \u2014 e ao tocar em um deles, o valor e
+   a descri\u00e7\u00e3o s\u00e3o preenchidos automaticamente (mas continuam
+   edit\u00e1veis manualmente depois).
+   Tipos sem pacote cadastrado aqui (ou "Outro") n\u00e3o mostram sugest\u00e3o
+   \u2014 o valor \u00e9 preenchido manualmente nesse caso.
+   Essa MESMA tabela \u00e9 usada para gerar a placa A4 de valores
+   (arquivo gerar-placa-precos.html / script separado).
+------------------------------------------------------------------ */
+const PACOTES = {
+  'Ensaio Gestante': [
+    { nome: 'Essencial', valor: 300, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 500, desc: '20 fotos editadas + 1 foto impressa 20x30' },
+    { nome: 'Completo',  valor: 750, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
+  ],
+  'Ensaio Newborn': [
+    { nome: 'Essencial', valor: 350, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 550, desc: '20 fotos editadas + acess\u00f3rios do est\u00fadio' },
+    { nome: 'Completo',  valor: 800, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
+  ],
+  'Ensaio de Casal': [
+    { nome: 'Essencial', valor: 280, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 450, desc: '20 fotos editadas + 1 troca de look' },
+    { nome: 'Completo',  valor: 650, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
+  ],
+  'Ensaio Individual/Book': [
+    { nome: 'Essencial', valor: 280, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 450, desc: '20 fotos editadas + 1 troca de look' },
+    { nome: 'Completo',  valor: 650, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
+  ],
+  'Ensaio Infantil': [
+    { nome: 'Essencial', valor: 280, desc: '10 fotos editadas em alta resolu\u00e7\u00e3o' },
+    { nome: 'Especial',  valor: 450, desc: '20 fotos editadas + 1 troca de look' },
+    { nome: 'Completo',  valor: 650, desc: '35 fotos editadas + \u00e1lbum f\u00edsico' },
+  ],
+  'Anivers\u00e1rio/Festa': [
+    { nome: 'Essencial', valor: 400, desc: 'Cobertura de 2 horas + 20 fotos editadas' },
+    { nome: 'Especial',  valor: 650, desc: 'Cobertura de 3 horas + 40 fotos editadas' },
+    { nome: 'Completo',  valor: 950, desc: 'Cobertura de 4 horas + 60 fotos editadas + \u00e1lbum' },
+  ],
+  'Casamento': [
+    { nome: 'Essencial', valor: 1500, desc: 'Cobertura de 4 horas + galeria editada' },
+    { nome: 'Especial',  valor: 2500, desc: 'Cobertura de 8 horas + galeria editada + \u00e1lbum' },
+    { nome: 'Completo',  valor: 3800, desc: 'Cobertura do dia todo + \u00e1lbum + v\u00eddeo highlights' },
+  ],
+};
+
 /* ---------------------------------------------------------------
    Rede de segurança: qualquer erro de JS vira um aviso visível na
    tela, em vez de falhar silenciosamente (o que parecia "não faz nada").
@@ -279,21 +331,7 @@ function renderBuilder() {
   app.innerHTML = `
     <div class="card">
       <h2 class="section">Painel MPS Photography — Novo Contrato</h2>
-      <p class="muted small" style="margin-top:-6px;">Preencha os dados do cliente e do serviço. No final você recebe um link exclusivo para enviar ao cliente pelo WhatsApp.</p>
-
-      <label class="first">Nome completo do cliente</label>
-      <input type="text" id="f_nome" placeholder="Ex: Gabrielle Aparecida Bastos">
-
-      <div class="row2">
-        <div><label>CPF</label><input type="text" id="f_cpf" placeholder="000.000.000-00"></div>
-        <div><label>Telefone / WhatsApp</label><input type="tel" id="f_tel" placeholder="(11) 90000-0000"></div>
-      </div>
-
-      <label>E-mail</label>
-      <input type="email" id="f_email" placeholder="cliente@email.com">
-
-      <label>Endereço</label>
-      <input type="text" id="f_endereco" placeholder="Rua, número, bairro, cidade/UF">
+      <p class="muted small" style="margin-top:-6px;">Preencha os dados do serviço já combinados com a cliente. No final você recebe um link exclusivo: a cliente preenche os dados pessoais dela e assina direto na mesma página.</p>
 
       <h2 class="section" style="margin-top:22px;">Tipo de serviço</h2>
       <div class="choice-grid" id="grid_tipo">
@@ -302,6 +340,8 @@ function renderBuilder() {
         `).join('')}
       </div>
       <input type="text" id="f_tipoOutro" placeholder="Se 'Outro', descreva" style="margin-top:8px;">
+
+      <div id="pacotesBox"></div>
 
       <label>Descrição do pacote</label>
       <textarea id="f_pacote" placeholder="Ex: Galeria Especial com 20 fotos digitais em alta resolução"></textarea>
@@ -343,15 +383,7 @@ function renderBuilder() {
         <div><label>Antecedência p/ remarcação (dias)</label><input type="number" id="f_antecedencia" placeholder="7"></div>
       </div>
 
-      <h2 class="section" style="margin-top:22px;">Direitos de imagem</h2>
-      <div class="choice-grid" id="grid_direitos">
-        ${['Autoriza uso total (portfólio e redes sociais)','Autoriza, sem uso comercial pago (anúncios)','Autoriza mediante aprovação prévia de cada imagem','NÃO autoriza divulgação pública'].map((t,i)=>`
-          <label class="choice"><input type="radio" name="direitosImagem" value="${t}" ${i===0?'checked':''}> ${t}</label>
-        `).join('')}
-      </div>
-
       <button type="button" style="margin-top:22px;" onclick="gerarLink()">Gerar link do contrato</button>
-      <p class="error-msg" id="builderError">Preencha ao menos o nome do cliente antes de gerar o link.</p>
 
       <div id="resultBox" class="hidden" style="margin-top:18px;">
         <label class="first">Link para enviar ao cliente</label>
@@ -364,9 +396,61 @@ function renderBuilder() {
     </div>
   `;
 
+  syncChoices();
+
+  const tipoInicialEl = document.querySelector('input[name="tipoServico"]:checked');
+  renderPacotesBox(tipoInicialEl ? tipoInicialEl.value : '');
+  document.querySelectorAll('input[name="tipoServico"]').forEach(r => {
+    r.addEventListener('change', () => renderPacotesBox(r.value));
+  });
+}
+
+/* ---------------------------------------------------------------
+   Mostra os pacotes cadastrados (tabela PACOTES, lá em cima) para
+   o tipo de serviço selecionado. Tocar em um pacote preenche
+   automaticamente o valor e a descrição — e continua editável.
+--------------------------------------------------------------- */
+function renderPacotesBox(tipo) {
+  const box = document.getElementById('pacotesBox');
+  if (!box) return;
+  const pacotes = PACOTES[tipo];
+  if (!pacotes || !pacotes.length) {
+    box.innerHTML = '<p class="hint" style="margin-top:8px;">Sem pacotes pré-cadastrados para este tipo — preencha o valor manualmente abaixo.</p>';
+    return;
+  }
+  box.innerHTML = `
+    <label style="margin-top:14px;">Pacotes de "${esc(tipo)}" <span class="muted small">(toque para preencher valor e descrição)</span></label>
+    <div class="choice-grid" id="grid_pacoteSugerido" style="grid-template-columns:1fr;">
+      ${pacotes.map(p => `
+        <label class="choice" data-valor="${p.valor}" data-desc="${esc(p.nome + ' — ' + p.desc)}">
+          <input type="radio" name="pacoteSugerido" value="${esc(p.nome)}">
+          <span><b>${esc(p.nome)}</b> — ${fmtMoney(p.valor)}<br><span class="muted small">${esc(p.desc)}</span></span>
+        </label>
+      `).join('')}
+    </div>
+  `;
+  box.querySelectorAll('#grid_pacoteSugerido .choice').forEach(c => {
+    const input = c.querySelector('input');
+    c.addEventListener('click', () => {
+      box.querySelectorAll('#grid_pacoteSugerido .choice').forEach(x => x.classList.remove('checked'));
+      c.classList.add('checked');
+      input.checked = true;
+      document.getElementById('f_valor').value = c.dataset.valor;
+      document.getElementById('f_pacote').value = c.dataset.desc;
+    });
+  });
+}
+
+/* ---------------------------------------------------------------
+   Sincroniza o visual (.choice / .checked) com os inputs de
+   rádio/checkbox atualmente presentes na tela — reutilizado tanto
+   no painel da fotógrafa quanto na etapa de dados da cliente.
+--------------------------------------------------------------- */
+function syncChoices() {
   try {
     document.querySelectorAll('.choice').forEach(c => {
       const input = c.querySelector('input');
+      if (!input) return;
       const sync = () => c.classList.toggle('checked', input.checked);
       input.addEventListener('change', () => {
         if (input.type === 'radio') {
@@ -385,11 +469,6 @@ function gerarLink() {
   const pagamento = Array.from(document.querySelectorAll('input[name="pagamento"]:checked')).map(e=>e.value);
 
   const payload = {
-    clienteNome: document.getElementById('f_nome').value.trim(),
-    clienteCpf: document.getElementById('f_cpf').value.trim(),
-    clienteTel: document.getElementById('f_tel').value.trim(),
-    clienteEmail: document.getElementById('f_email').value.trim(),
-    clienteEndereco: document.getElementById('f_endereco').value.trim(),
     tipoServico: tipoEl ? tipoEl.value : '',
     tipoServicoOutro: document.getElementById('f_tipoOutro').value.trim(),
     pacote: document.getElementById('f_pacote').value.trim(),
@@ -405,17 +484,7 @@ function gerarLink() {
     pagamento: pagamento,
     prazo: document.getElementById('f_prazo').value,
     antecedencia: document.getElementById('f_antecedencia').value,
-    direitosImagem: (document.querySelector('input[name="direitosImagem"]:checked') || {}).value || '',
   };
-
-  if (!payload.clienteNome) {
-    const errEl = document.getElementById('builderError');
-    if (errEl) errEl.style.display = 'block';
-    document.getElementById('f_nome').focus();
-    return;
-  }
-  const errEl = document.getElementById('builderError');
-  if (errEl) errEl.style.display = 'none';
 
   const encoded = encodePayload(payload);
   const url = location.origin + location.pathname + '?d=' + encoded;
@@ -447,9 +516,75 @@ function renderClientCover(payload) {
       <h2 class="section" style="border:none;">Contrato de Prestação de Serviços</h2>
       <h2>de Fotografia e Filmagem</h2>
       <p class="sent">Enviado por Priscila Pires da Silva — MPS Photography</p>
-      <button type="button" onclick="renderContract(STATE.payload)">Acessar contrato</button>
+      <button type="button" onclick="renderClientData(STATE.payload)">Acessar contrato</button>
     </div>
   `;
+}
+
+/* ---------------------------------------------------------------
+   ETAPA DA CLIENTE — dados pessoais + direitos de imagem, antes
+   de mostrar o contrato completo (tudo no mesmo link/página).
+--------------------------------------------------------------- */
+function renderClientData(payload) {
+  app.innerHTML = `
+    <div class="card">
+      <h2 class="section">Seus dados</h2>
+      <p class="muted small" style="margin-top:-6px;">Antes de ver o contrato, confirme seus dados abaixo.</p>
+
+      <label class="first">Nome completo</label>
+      <input type="text" id="c_nome" placeholder="Seu nome completo" value="${esc(payload.clienteNome||'')}">
+
+      <div class="row2">
+        <div><label>CPF</label><input type="text" id="c_cpf" placeholder="000.000.000-00" value="${esc(payload.clienteCpf||'')}"></div>
+        <div><label>Telefone / WhatsApp</label><input type="tel" id="c_tel" placeholder="(11) 90000-0000" value="${esc(payload.clienteTel||'')}"></div>
+      </div>
+
+      <label>E-mail</label>
+      <input type="email" id="c_email" placeholder="seuemail@email.com" value="${esc(payload.clienteEmail||'')}">
+
+      <label>Endereço</label>
+      <input type="text" id="c_endereco" placeholder="Rua, número, bairro, cidade/UF" value="${esc(payload.clienteEndereco||'')}">
+
+      ${payload.valor ? `<p class="hint" style="margin-top:10px;">Caso deseje fotos extras além do pacote combinado, o valor final é ajustado diretamente com a fotógrafa antes da assinatura.</p>` : ''}
+
+      <h2 class="section" style="margin-top:22px;">Direitos de imagem</h2>
+      <p class="muted small" style="margin-top:-6px;">Como podemos usar suas fotos para divulgar o trabalho da MPS Photography?</p>
+      <div class="choice-grid" id="grid_direitos">
+        ${['Autoriza uso total (portfólio e redes sociais)','Autoriza, sem uso comercial pago (anúncios)','Autoriza mediante aprovação prévia de cada imagem','NÃO autoriza divulgação pública'].map((t,i)=>`
+          <label class="choice"><input type="radio" name="direitosImagem" value="${t}" ${i===0?'checked':''}> ${t}</label>
+        `).join('')}
+      </div>
+
+      <button type="button" style="margin-top:22px;" onclick="confirmarDadosCliente()">Continuar para o contrato</button>
+      <p class="error-msg" id="clientDataError">Preencha ao menos seu nome completo antes de continuar.</p>
+    </div>
+  `;
+  syncChoices();
+}
+
+function confirmarDadosCliente() {
+  const nome = document.getElementById('c_nome').value.trim();
+  if (!nome) {
+    const errEl = document.getElementById('clientDataError');
+    if (errEl) errEl.style.display = 'block';
+    document.getElementById('c_nome').focus();
+    return;
+  }
+  const errEl = document.getElementById('clientDataError');
+  if (errEl) errEl.style.display = 'none';
+
+  const direitosEl = document.querySelector('input[name="direitosImagem"]:checked');
+
+  STATE.payload = Object.assign({}, STATE.payload, {
+    clienteNome: nome,
+    clienteCpf: document.getElementById('c_cpf').value.trim(),
+    clienteTel: document.getElementById('c_tel').value.trim(),
+    clienteEmail: document.getElementById('c_email').value.trim(),
+    clienteEndereco: document.getElementById('c_endereco').value.trim(),
+    direitosImagem: direitosEl ? direitosEl.value : '',
+  });
+
+  renderContract(STATE.payload);
 }
 
 function contractHtml(payload, opts) {
